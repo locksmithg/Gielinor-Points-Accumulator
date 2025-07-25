@@ -57,5 +57,34 @@ ITEM_WHITELIST = {
     4976: "Verac's helm (broken)",
     4978: "Verac's flail (broken)",
     4980: "Verac's brassard (broken)",
-    4982: "Verac's plateskirt (broken)"
+    4982: "Verac's plateskirt (broken)",
+
+    # Perilous Moons Items
+    # Blood Moon
+    12348: "Dual macahuatl",
+    29028: "Blood moon helm",
+    29022: "Blood moon chestplate",
+    29025: "Blood moon tassets",
+    29073: "Blood moon helm (broken)",
+    29067: "Blood moon chestplate (broken)",
+    29070: "Blood moon tassets (broken)",
+
+    # Eclipse Moon
+    29000: "Eclipse atlatl",
+    29004: "Eclipse moon chestplate",
+    29010: "Eclipse moon helm",
+    29007: "Eclipse moon tassets",
+    29049: "Eclipse moon chestplate (broken)",
+    29055: "Eclipse moon helm (broken)",
+    29052: "Eclipse moon tassets (broken)",
+    
+    # Blue moon
+    28988: "Blue moon spear",
+    29013: "Blue moon chestplate",
+    29019: "Blue moon helm",
+    29016: "Blue moon tassets",
+    29058: "Blue moon chestplate (broken)",
+    29064: "Blue moon helm (broken)",
+    29061: "Blue moon tassets (broken)"
+
 }
