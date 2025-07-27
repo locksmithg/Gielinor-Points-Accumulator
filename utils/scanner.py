@@ -31,6 +31,16 @@ def fetch_all_latest_prices():
 #     df["date"] = pd.to_datetime(df["timestamp"].astype(int), unit="ms")
 #     return df[["date", "price"]]
 
+def get_all_mapping():
+    url = "https://prices.runescape.wiki/api/v1/osrs/mapping"
+    response = requests.get(url)
+    if response.status_code == 200:
+        print(type(response.json()))
+        return response.json()
+    else:
+        print(f"[Error] Failed to fetch item mapping: {response.status_code}")
+        return {}
+
 def fetch_item_ids():
     url = "https://oldschool.runescape.wiki/?title=Module:GEIDs/data.json&action=raw&ctype=application%2Fjson"
     response = requests.get(url)
