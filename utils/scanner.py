@@ -4,10 +4,6 @@ import pandas as pd
 import time
 from datetime import datetime
 
-from profiles.barrows_repairer import ITEM_WHITELIST as BARROWS_WL
-from profiles.costco import ITEM_WHITELIST as COSTCO_WL
-from profiles.potion_seller import ITEM_WHITELIST as POTION_WL
-
 def fetch_all_latest_prices():
     url = "https://prices.runescape.wiki/api/v1/osrs/latest"
     response = requests.get(url)
@@ -35,6 +31,18 @@ def fetch_all_latest_prices():
 #     df["date"] = pd.to_datetime(df["timestamp"].astype(int), unit="ms")
 #     return df[["date", "price"]]
 
+def fetch_item_ids():
+    url = "https://oldschool.runescape.wiki/?title=Module:GEIDs/data.json&action=raw&ctype=application%2Fjson"
+    response = requests.get(url)
+    if response.status_code == 200:
+        json = response.json()
+        if isinstance(json, dict):
+            return json
+        else:
+            print("[Error] Unexpected JSON format for item IDs.")
+            return {}
+    return {}
+
 def fetch_item_data(item_id, retries=3, delay=0.5):
     url = f"https://prices.runescape.wiki/api/v1/osrs/latest?id={item_id}"
     
@@ -59,13 +67,15 @@ def fetch_item_data(item_id, retries=3, delay=0.5):
 
     return {}  # Return empty if all retries failed
 
-def scan_items(item_whitelist):
+def get_item_prices(item_whitelist):
     all_data = fetch_all_latest_prices()
+    item_ids = fetch_item_ids()
+    # create dictionary of item IDs and names
+    whitelist_dict = {str(k): v for k, v in item_ids.items() if str(k) in item_whitelist}
     results = []
 
-    for item_id, item_name in item_whitelist.items():
+    for item_name, item_id in whitelist_dict.items():
         item_data = all_data.get(str(item_id))
-
         if item_data:
             high = item_data.get("high", 0)
             low = item_data.get("low", 0)
@@ -93,13 +103,24 @@ def scan_items(item_whitelist):
                 "High Price": None,
                 "High Time": None,
                 "Margin": None,
-                "ROI %": None
+                "ROI %": 0
             })
 
-    return pd.DataFrame(results).sort_values(by="ROI %", ascending=False)
+    return results
 
 def format_timestamp(ts):
     try:
         return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
     except:
         return "Unknown"
+
+#import potion_seller whitelist
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import profiles.potion_seller as potion_seller
+import profiles.barrows_repairer as barrows_repairer
+import profiles.costco as costco
+if __name__ == "__main__":
+    data = get_item_prices(costco.ITEM_WHITELIST)
+    print(data)
