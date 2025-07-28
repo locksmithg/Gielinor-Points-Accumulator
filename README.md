@@ -46,6 +46,17 @@ cd Gielinor-Points-Accumulator
 pip install -r requirements.txt
 streamlist run app.py
 ```
+
+## 📈 Future Plans and Contribution
+
+  Scope creep is something I've been very guilty of for short term projects like this. Here are some other features that I considered or might implement sometime:
+- Create your own profiles and templates to contain whatever items you want and make it easy to manipulate the tables and data visualiztion in the UI or maybe a config file. I began work on this, but I simply did not have enough time in one weekend to do this too :(
+- Scrape the OSRS News pages and posts for references to items and send a notification to the user that it could affect the price of mentioned items.
+- Scrape r/GrandExchangeBets for general sentiment around items or potential hyped items that could see movement. This would be an awesome candidate for some AI integration to interpret what is "positive" or "negative" sentiment towards items.
+- Start building predictive models around price movement for items. While certainly impossible in the real world, I suspect it is entirely possible to create a reasonably accurate predictive model for this in-game economy. The big things are that I have access to so, so much more data than is available in the real world. Individual items are not managed by individually run chaotic businesses, just Jagex. That means that it removes an incredible amount of complexity and chaos from the equation.
+- A direct in game plugin that could report your actual trades in the game to this external tool and supply metrics on your successes and failures.
+- Plenty more! I would love to hear feedback on the idea and other future potential updates!
+
 ## 🤓 The cool stuff I learned and implemented
 
     The main goal with this was to practice data organization stuff that I learned back in college for my Stats degree. ✅
