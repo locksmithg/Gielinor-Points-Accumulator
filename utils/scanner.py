@@ -13,29 +13,10 @@ def fetch_all_latest_prices():
         print(f"[Error] Failed to fetch prices: {response.status_code}")
         return {}
 
-# def fetch_graph_meta(item_id):
-#     url = f"https://prices.runescape.wiki/api/v1/osrs/graphs?id={item_id}"
-#     resp = requests.get(url)
-#     if resp.status_code == 200:
-#         return resp.json().get("data", {}).get(str(item_id), {})
-#     return {}
-
-# def fetch_item_detail(item_id):
-#     url = f"https://secure.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item={item_id}"
-#     return requests.get(url).json()["item"]
-
-# def fetch_price_graph(item_id):
-#     url = f"https://secure.runescape.com/m=itemdb_oldschool/api/graph/{item_id}.json"
-#     data = requests.get(url).json()["daily"]
-#     df = pd.DataFrame(list(data.items()), columns=["timestamp", "price"])
-#     df["date"] = pd.to_datetime(df["timestamp"].astype(int), unit="ms")
-#     return df[["date", "price"]]
-
 def get_all_mapping():
     url = "https://prices.runescape.wiki/api/v1/osrs/mapping"
     response = requests.get(url)
     if response.status_code == 200:
-        print(type(response.json()))
         return response.json()
     else:
         print(f"[Error] Failed to fetch item mapping: {response.status_code}")

@@ -13,6 +13,7 @@ def compare_potion_doses(prices: list[dict]) -> list[dict]:
                 "2-dose PPD": 0,
                 "3-dose PPD": 0,
                 "4-dose PPD high": 0,
+                "Sell Price": 0,
                 "Lowest PPD": 0,
                 "Margin": 0
             }
@@ -24,7 +25,8 @@ def compare_potion_doses(prices: list[dict]) -> list[dict]:
             results[potion_name]["3-dose PPD"] = round(low / 3, 2)
         elif '(4)' in name:
             results[potion_name]["4-dose PPD high"] = round(high / 4, 2) if high else None
-    
+            results[potion_name]["Sell Price"] = high
+
     # Post-process: compute Lowest PPD and Margin
     for entry in results.values():
         ppds = {d: entry[f"{d}-dose PPD"] for d in [1, 2, 3] if entry[f"{d}-dose PPD"] is not None}
