@@ -6,6 +6,10 @@ Author: Gabriel Smith
 
 **Gielinor Points Accumulator** is a Streamlit-based dashboard that tracks Old School RuneScape (OSRS) Grand Exchange data, surfaces flipping opportunities, potion pricing insights, Barrows gear margins, and identifies items that are profitable to high-alch — all in a fast, clean, and easy-to-use interface.
 
+For those who have never played OSRS, the Grand Exchange is just the in-game auction house system that players are able to list items to buy and sell for specific GP prices, GP being the currency. 
+
+If only looking at real world markets were so easy...
+
 ---
 
 ## 🚀 Features
