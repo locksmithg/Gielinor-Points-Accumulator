@@ -1,32 +1,26 @@
 
 
 def get_best_alchs(prices, mapping):
-    results = {}
+    results = []
+    NR_ID = "561"  # Nature rune ID
+    nature_rune = prices.get(NR_ID, {"low": 0, "high": 0})
+    for item in mapping:
+        item_id = str(item["id"])
+        if item_id not in prices.keys():
+            continue
+        item_name = item["name"]
+        lp = prices[item_id]["low"]
+        hp = prices[item_id]["high"]
+        if "highalch" not in item:
+            continue
+        if item["highalch"] < lp + nature_rune["low"]:
+            continue
+        results.append({
+            "Item": item_name,
+            "High Alch": item["highalch"],
+            "Low Price": lp,
+            "High Price": hp,
+            "Margin": item["highalch"] - (lp + nature_rune["low"]),
+        })
 
-    for item in prices:
-        name = item["Item"]
-        low = item["Low Price"]
-        high = item["High Price"]
-        item_name = mapping.get(name, name).split("(")[0].strip()
-        
-        if item_name not in results:
-            results[item_name] = {
-                "Item": item_name,
-                "Low Alch": 0,
-                "High Alch": 0,
-                "Margin": 0
-            }
-        
-        if 'low alch' in name.lower():
-            results[item_name]["Low Alch"] = low
-        elif 'high alch' in name.lower():
-            results[item_name]["High Alch"] = high
-    
-    # Post-process: calculate Margin
-    for entry in results.values():
-        low_alch = entry["Low Alch"]
-        high_alch = entry["High Alch"]
-        if low_alch and high_alch:
-            entry["Margin"] = high_alch - low_alch
-    
-    return list(results.values())
+    return nature_rune, results

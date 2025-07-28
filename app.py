@@ -10,6 +10,7 @@ import profiles.barrows_repairer as barrows_repairer
 import profiles.costco as costco
 from utils.potion_comparator import compare_potion_doses
 from utils.repair_costinator import get_repair_costs
+from utils.full_metal_alchemist import get_best_alchs
 
 REFRESH_SECONDS = 60
 
@@ -17,12 +18,9 @@ REFRESH_SECONDS = 60
 st.set_page_config(page_title="Gielinor Points Accumulator", layout="wide")
 
 # Initialize session state
-if "auto_refresh" not in st.session_state:
-    st.session_state.auto_refresh = True  # Default to auto-refresh enabled
-if 'prices' not in st.session_state:
-    st.session_state.prices = None
-if 'all_mapping' not in st.session_state:
-    st.session_state.all_mapping = None
+if "custom_profile" not in st.session_state:
+    st.session_state.custom_profile = None
+
 
 def fetch_data(profile):
     """Fetch prices and mapping data"""
@@ -35,48 +33,32 @@ def fetch_data(profile):
         return prices, all_mapping
 
 # Profile selection
-profile_name = st.selectbox("Select a profile", ["Potion Seller", "Barrows Repairer", "Costco (Bulk Items)"])
+profile_name = st.selectbox("Select a profile", ["Potion Seller", "Barrows Repairer", "Costco (Bulk Items)", "Full Metal Alchemist"], index=0)
 
 # Resolve profile module
 profile = {
     "Potion Seller": potion_seller,
     "Barrows Repairer": barrows_repairer,
-    "Costco (Bulk Items)": costco
+    "Costco (Bulk Items)": costco,
+    "Full Metal Alchemist": None
 }[profile_name]
 
+prices, all_mapping = fetch_data(profile)
+
 # Create columns for refresh controls
-col1, col2, col3 = st.columns([1, 1, 2])
+col1, col2 = st.columns([1, 1])
 with col1:
     # Manual refresh button
     if st.button("🔄 Refresh Data", help="Click to manually refresh the data"):
-        st.session_state.prices, st.session_state.all_mapping = fetch_data(profile)
+        prices, all_mapping = fetch_data(profile)
         st.session_state.last_refresh = time.time()
         st.rerun()
 
 with col2:
-    # Auto-refresh toggle
-    auto_toggle = st.checkbox(f"Auto-refresh ({REFRESH_SECONDS}s)", value=st.session_state.auto_refresh, 
-                              help=f"Automatically refresh data every {REFRESH_SECONDS} seconds")
-    st.session_state.auto_refresh = auto_toggle  # Update session state for auto-refresh toggle. This still feels circular to me i have read too many docs on this and still ????
-
-with col3:
-    # Display last refresh time and countdown
+    # Display last refresh time
     last_refreshed = st.session_state.get("last_refreshed", time.time())
     local_time_str = datetime.fromtimestamp(last_refreshed).strftime("%H:%M:%S")
     st.write(f"Last updated: {local_time_str}")
-
-# Auto-refresh logic
-time_since_refresh = int(time.time() - last_refreshed)
-if st.session_state.auto_refresh and time_since_refresh >= REFRESH_SECONDS:
-    st.session_state.last_refreshed = time.time()
-
-# Use cached data or fetch if not available
-if st.session_state.prices is None:
-    st.session_state.prices, st.session_state.all_mapping = fetch_data(profile)
-    st.session_state.last_refresh = time.time()
-
-prices = st.session_state.prices
-all_mapping = st.session_state.all_mapping
 
 # Add a separator
 st.divider()
@@ -112,4 +94,10 @@ elif profile_name == "Barrows Repairer":
 elif profile_name == "Costco (Bulk Items)":
     df = pd.DataFrame(prices).sort_values(by="ROI %", ascending=False)
     df.drop(columns=["Item ID"], inplace=True, errors='ignore')
+    st.dataframe(df, use_container_width=True, hide_index=True)
+############### Costco (Bulk Items) Tab ###############
+elif profile_name == "Full Metal Alchemist":
+    nature_rune, best_alchs = get_best_alchs(prices, all_mapping)
+    st.write(f"Nature Rune Price Low: {nature_rune['low']} | High: {nature_rune['high']}")
+    df = pd.DataFrame(best_alchs).sort_values(by="Margin", ascending=False)
     st.dataframe(df, use_container_width=True, hide_index=True)
